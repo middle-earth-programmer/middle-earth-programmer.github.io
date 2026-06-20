@@ -6,6 +6,8 @@
     <title>2026 Costa Rican Legislative Assembly Allocations</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased">
 
@@ -29,89 +31,169 @@
             </div>
         </section>
 
-        <!-- Provinces Grid Section -->
+        <!-- Breakdown Section -->
         <section>
-            <h2 class="text-2xl font-bold text-slate-700 border-b border-slate-300 pb-2 mb-4">By Province</h2>
-            <div id="provinces-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Province cards injected via JS -->
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b border-slate-300 pb-2 mb-4 gap-4">
+                <h2 class="text-2xl font-bold text-slate-700">Detailed Breakdown</h2>
+                <select id="area-select" class="border border-slate-300 rounded-md p-2 text-slate-700 font-medium bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="National" selected>National Total</option>
+                    <!-- Provinces injected via JS -->
+                </select>
+            </div>
+            
+            <!-- Interactive Chart Container -->
+            <div id="breakdown-view" class="flex bg-white rounded-lg shadow-sm border border-slate-200 p-6 flex-col md:flex-row items-center justify-center gap-8">
+                
+                <!-- Chart Canvas -->
+                <div class="w-full md:w-1/2 max-w-sm">
+                    <canvas id="breakdown-chart"></canvas>
+                </div>
+                
+                <!-- Detail List -->
+                <div class="w-full md:w-1/2 flex flex-col">
+                    <h3 id="breakdown-title" class="text-xl font-bold text-slate-800 mb-4 border-b pb-2"></h3>
+                    <div id="breakdown-details"></div>
+                </div>
+
             </div>
         </section>
 
     </main>
 
-    <!-- Script to render the JSON data into the UI -->
+    <!-- Script to dynamically load JSON data and render the UI -->
     <script>
-        // 1. Fetch the data from the external JSON file
+        // Define party branding
+        const partyStyles = {
+            "Pueblo Soberano": { css: "bg-teal-500 text-teal-50", hex: "#14b8a6" },
+            "Liberación Nacional": { css: "bg-green-600 text-green-50", hex: "#16a34a" },
+            "Frente Amplio": { css: "bg-yellow-400 text-yellow-900", hex: "#facc15" },
+            "Unidad Social Cristiana": { css: "bg-blue-600 text-blue-50", hex: "#2563eb" },
+            "Nueva República": { css: "bg-sky-500 text-sky-50", hex: "#0ea5e9" },
+            "Coalición Agenda Ciudadana": { css: "bg-red-500 text-red-50", hex: "#ef4444" }
+        };
+
+        function getStyle(party) {
+            return partyStyles[party] || { css: "bg-slate-200 text-slate-800", hex: "#94a3b8" };
+        }
+
+        let pieChart = null;
+
         fetch('election_results.json')
             .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error("HTTP error!");
                 return response.json();
             })
             .then(electionData => {
-                // Cosmetic: add party colors for better readability
-                const partyColors = {
-                    "Pueblo Soberano": "bg-teal-500 text-teal-50",
-                    "Liberación Nacional": "bg-green-600 text-green-50",
-                    "Frente Amplio": "bg-yellow-400 text-yellow-900",
-                    "Unidad Social Cristiana": "bg-blue-600 text-blue-50",
-                    "Nueva República": "bg-sky-500 text-sky-50",
-                    "Coalición Agenda Ciudadana": "bg-red-500 text-red-50",
-                    // Room for other parties (if needed)
-                };
-
-                // 2. Render National Totals
+                
+                // 1. Render National Totals (Top Section)
                 const nationalContainer = document.getElementById('national-container');
                 for (const [party, seats] of Object.entries(electionData.national_total)) {
-                    // Look up the color, default to gray if not found
-                    const colorClass = partyColors[party] || "bg-slate-200 text-slate-800";
-                    
+                    const style = getStyle(party);
                     nationalContainer.innerHTML += `
-                        <div class="p-4 rounded-md border border-slate-100 flex flex-col items-center justify-center text-center ${colorClass} shadow-sm">
+                        <div class="${style.css} p-4 rounded-md border border-slate-100 flex flex-col items-center justify-center text-center shadow-sm">
                             <span class="text-3xl font-black mb-1">${seats}</span>
                             <span class="text-xs font-semibold uppercase tracking-wide leading-tight">${party}</span>
                         </div>
                     `;
                 }
 
-                // 3. Render Province Cards
-                const provincesGrid = document.getElementById('provinces-grid');
-                for (const [province, data] of Object.entries(electionData.provinces)) {
+                // 2. Setup the Dropdown Options for Provinces
+                const areaSelect = document.getElementById('area-select');
+                const provinceNames = Object.keys(electionData.provinces);
+                
+                provinceNames.forEach(province => {
+                    const option = document.createElement('option');
+                    option.value = province;
+                    option.textContent = province;
+                    areaSelect.appendChild(option);
+                });
+
+                // 3. Reusable function to render the chart based on selection
+                function renderChartView(selection) {
+                    let dataToDisplay = {};
+                    let titleText = "";
+
+                    if (selection === "National") {
+                        dataToDisplay = electionData.national_total;
+                        titleText = "National Total (57 Seats)";
+                    } else {
+                        dataToDisplay = electionData.provinces[selection].allocation;
+                        const seats = electionData.provinces[selection].total_seats_available;
+                        titleText = `${selection} (${seats} Seats)`;
+                    }
+
+                    document.getElementById('breakdown-title').textContent = titleText;
+
+                    const labels = [];
+                    const chartData = [];
+                    const backgroundColors = [];
+                    const detailsContainer = document.getElementById('breakdown-details');
                     
-                    let partyRows = '';
-                    for (const [party, seats] of Object.entries(data.allocation)) {
+                    detailsContainer.innerHTML = ''; // Clear old list
+
+                    for (const [party, seats] of Object.entries(dataToDisplay)) {
                         if (seats > 0) { 
-                            // Look up the color, default to gray if not found
-                            const colorClass = partyColors[party] || "bg-slate-200 text-slate-800";
+                            const style = getStyle(party);
                             
-                            partyRows += `
+                            labels.push(party);
+                            chartData.push(seats);
+                            backgroundColors.push(style.hex);
+
+                            detailsContainer.innerHTML += `
                                 <div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
                                     <span class="text-sm font-medium text-slate-700">${party}</span>
-                                    <span class="${colorClass} text-xs font-bold px-2 py-1 rounded-full shadow-sm">${seats} seats</span>
+                                    <span class="${style.css} text-xs font-bold px-2 py-1 rounded-full shadow-sm">${seats} seats</span>
                                 </div>
                             `;
                         }
                     }
 
-                    provincesGrid.innerHTML += `
-                        <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-                            <div class="bg-slate-800 text-white px-4 py-3 flex justify-between items-center">
-                                <h3 class="font-bold">${province}</h3>
-                                <span class="text-xs text-slate-300">${data.total_seats_available} Seats</span>
-                            </div>
-                            <div class="p-4 flex-grow">
-                                ${partyRows}
-                            </div>
-                        </div>
-                    `;
+                    // Render or Update Chart.js
+                    const ctx = document.getElementById('breakdown-chart').getContext('2d');
+                    
+                    if (pieChart) {
+                        pieChart.data.labels = labels;
+                        pieChart.data.datasets[0].data = chartData;
+                        pieChart.data.datasets[0].backgroundColor = backgroundColors;
+                        pieChart.update();
+                    } else {
+                        pieChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    data: chartData,
+                                    backgroundColor: backgroundColors,
+                                    borderWidth: 1,
+                                    borderColor: '#ffffff'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: { padding: 20 }
+                                    }
+                                }
+                            }
+                        });
+                    }
                 }
+
+                // 4. Listen for Dropdown Changes
+                areaSelect.addEventListener('change', (e) => {
+                    renderChartView(e.target.value);
+                });
+
+                // 5. Initialize the chart with the National view on page load
+                renderChartView("National");
             })
             .catch(error => {
                 console.error("Error loading the election data:", error);
                 document.getElementById('national-container').innerHTML = `
                     <div class="col-span-full text-red-600 font-medium p-4 text-center">
-                        Failed to load election data. Please check your console logs or ensure election_results.json exists.
+                        Failed to load election data. Ensure election_results.json exists and you are running a local server.
                     </div>
                 `;
             });
