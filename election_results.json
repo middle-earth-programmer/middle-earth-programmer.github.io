@@ -1,65 +1,131 @@
 {
   "national_total": {
-    "Pueblo Soberano": 31,
-    "Liberación Nacional": 17,
-    "Frente Amplio": 7,
-    "Coalición Agenda Ciudadana": 1,
-    "Unidad Social Cristiana": 1
+    "seats": {
+      "Pueblo Soberano": 31,
+      "Liberación Nacional": 17,
+      "Frente Amplio": 7,
+      "Coalición Agenda Ciudadana": 1,
+      "Unidad Social Cristiana": 1
+    },
+    "popular_vote": {
+      "Pueblo Soberano": 44.96,
+      "Liberación Nacional": 23.23,
+      "Frente Amplio": 12.25,
+      "Coalición Agenda Ciudadana": 4.03,
+      "Unidad Social Cristiana": 4.57,
+      "Other": 10.96
+    }
   },
   "provinces": {
     "San José": {
       "total_seats_available": 18,
-      "allocation": {
+      "seats": {
         "Pueblo Soberano": 8,
         "Liberación Nacional": 5,
         "Frente Amplio": 3,
         "Coalición Agenda Ciudadana": 1,
         "Unidad Social Cristiana": 1
+      },
+      "popular_vote": {
+        "Pueblo Soberano": 39.1,
+        "Liberación Nacional": 25.3,
+        "Frente Amplio": 15.73,
+        "Coalición Agenda Ciudadana": 5.0,
+        "Unidad Social Cristiana": 4.77,
+        "Other": 10.11
       }
     },
     "Cartago": {
       "total_seats_available": 6,
-      "allocation": {
+      "seats": {
         "Pueblo Soberano": 3,
         "Liberación Nacional": 2,
         "Frente Amplio": 1
+      },
+      "popular_vote": {
+        "Pueblo Soberano": 34.48,
+        "Liberación Nacional": 28.05,
+        "Frente Amplio": 13.47,
+        "Coalición Agenda Ciudadana": 5.6,
+        "Unidad Social Cristiana": 4.1,
+        "Other": 14.31
       }
     },
     "Heredia": {
       "total_seats_available": 5,
-      "allocation": {
+      "seats": {
         "Pueblo Soberano": 2,
         "Liberación Nacional": 2,
         "Frente Amplio": 1
+      },
+      "popular_vote": {
+        "Pueblo Soberano": 40.52,
+        "Liberación Nacional": 26.34,
+        "Frente Amplio": 16.13,
+        "Coalición Agenda Ciudadana": 4.83,
+        "Unidad Social Cristiana": 3.59,
+        "Other": 8.59
       }
     },
     "Alajuela": {
       "total_seats_available": 12,
-      "allocation": {
+      "seats": {
         "Pueblo Soberano": 7,
         "Liberación Nacional": 3,
         "Frente Amplio": 2
+      },
+      "popular_vote": {
+        "Pueblo Soberano": 51.97,
+        "Liberación Nacional": 22.53,
+        "Frente Amplio": 10.71,
+        "Unidad Social Cristiana": 3.4,
+        "Coalición Agenda Ciudadana": 2.63,
+        "Other": 8.75
       }
     },
     "Guanacaste": {
       "total_seats_available": 5,
-      "allocation": {
+      "seats": {
         "Pueblo Soberano": 3,
         "Liberación Nacional": 2
+      },
+      "popular_vote": {
+        "Pueblo Soberano": 50.61,
+        "Liberación Nacional": 18.38,
+        "Frente Amplio": 5.75,
+        "Unidad Social Cristiana": 5.57,
+        "Coalición Agenda Ciudadana": 3.41,
+        "Other": 16.28
       }
     },
     "Puntarenas": {
       "total_seats_available": 6,
-      "allocation": {
+      "seats": {
         "Pueblo Soberano": 4,
         "Liberación Nacional": 2
+      },
+      "popular_vote": {
+        "Pueblo Soberano": 58.97,
+        "Liberación Nacional": 15.93,
+        "Frente Amplio": 6.22,
+        "Unidad Social Cristiana": 5.49,
+        "Coalición Agenda Ciudadana": 1.96,
+        "Other": 11.43
       }
     },
     "Limón": {
       "total_seats_available": 5,
-      "allocation": {
+      "seats": {
         "Pueblo Soberano": 4,
         "Liberación Nacional": 1
+      },
+      "popular_vote": {
+        "Pueblo Soberano": 57.1,
+        "Liberación Nacional": 14.67,
+        "Unidad Social Cristiana": 7.53,
+        "Frente Amplio": 4.89,
+        "Coalición Agenda Ciudadana": 2.28,
+        "Other": 13.53
       }
     }
   }

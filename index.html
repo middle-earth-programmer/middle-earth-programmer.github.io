@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 Costa Rican Legislative Assembly Allocations</title>
+    <title>2026 Costa Rican Legislative Assembly Allocations & Popular Vote</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
@@ -26,17 +26,18 @@
     <header class="bg-blue-900 text-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-6">
             <h1 class="text-3xl font-bold tracking-tight">2026 Legislative Assembly</h1>
-            <p class="text-blue-200 mt-1 text-sm">Costa Rica General Election — Seat Allocation Dashboard</p>
+            <p class="text-blue-200 mt-1 text-sm">Costa Rica General Election — Seat Allocation & Popular Vote Dashboard</p>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
         
         <!-- National Total Section -->
+        <!-- STREAMING_CHUNK: Rendering the National summary cards -->
         <section>
-            <h2 class="text-2xl font-bold text-slate-700 border-b border-slate-300 pb-2 mb-4">National Results (57 Seats)</h2>
+            <h2 class="text-2xl font-bold text-slate-700 border-b border-slate-300 pb-2 mb-4">National Results (57 Seats Total)</h2>
             <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-                <div id="national-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div id="national-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
                     <!-- National data injected via JS -->
                 </div>
             </div>
@@ -45,47 +46,41 @@
         <!-- Main Interactive Dashboard Grid -->
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- LEFT PANEL: Controls & Map (Spans 5 columns on large screens) -->
+            <!-- LEFT PANEL: Controls & Map -->
+            <!-- STREAMING_CHUNK: Creating the interactive filters and map container -->
             <div class="lg:col-span-5 space-y-4">
                 <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 space-y-4">
                     <div>
                         <h2 class="text-xl font-bold text-slate-700 mb-1">Detailed Breakdown</h2>
-                        <p class="text-xs text-slate-400 mb-3">Click a province on the map or use the selector below</p>
+                        <p class="text-xs text-slate-400 mb-3">Click a province on the map or use the filters below</p>
                         
-                        <select id="area-select" class="w-full border border-slate-300 rounded-md p-2 text-slate-700 font-medium bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="National" selected>🇨🇷 National Total</option>
-                            <!-- Provinces dynamically injected here via JS -->
-                        </select>
+                        <div class="space-y-3">
+                            <select id="area-select" class="w-full border border-slate-300 rounded-md p-2 text-slate-700 font-medium bg-white shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="National" selected>🇨🇷 National Total</option>
+                                <!-- Provinces dynamically injected here via JS -->
+                            </select>
+
+                            <!-- Metric Toggle Switch -->
+                            <div class="flex rounded-md shadow-sm">
+                                <button id="tab-seats" class="w-1/2 py-2 text-xs font-semibold rounded-l-md border border-slate-300 bg-blue-50 text-blue-700 focus:outline-none transition-colors">
+                                    Seat Allocation
+                                </button>
+                                <button id="tab-vote" class="w-1/2 py-2 text-xs font-semibold rounded-r-md border-t border-b border-r border-slate-300 bg-white text-slate-600 hover:text-slate-800 hover:bg-slate-50 focus:outline-none transition-colors">
+                                    Popular Vote %
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Map Container -->
-                    <div class="bg-slate-50 border border-slate-100 rounded-md p-4 flex items-center justify-center shadow-inner relative overflow-hidden">
-                        
-                        <!-- High-Fidelity Interactive SVG Map of Costa Rica Provinces -->
-                        <!-- ViewBox perfectly cropped to bounds: Min X: 300, Min Y: 50, Width: 600, Height: 550 -->
-                        <svg id="costa-rica-map" viewBox="300 50 600 550" class="w-full h-auto max-w-md drop-shadow-sm">
-                            <g stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3">
-                                <!-- Alajuela -->
-                                <path id="Alajuela" class="province-path fill-slate-200" d="M607.7 113.2l0 0.7-0.4 34.3-0.3 25.8-0.3 18.4-0.2 22-1.9 24.3 0 0.4-2.9 3.1-0.8 1.2-0.1 0.5 0 0.5 0 0.8 0.3 1.4-2.3 2.6-4.4 1.4-10.6 3-2.8 0.4-0.8-0.3-1.9-0.2-0.8-0.2-0.6-0.2-3.1-0.5-3.1-0.9-3.8 0.8-7 0.5-4.9 2.2-1.3 0.8-0.1 0.2-0.2 0.4-1.9 1.8-2.7 1.4-1 0.8-0.5 0.6 0.1 0.4-0.1 0.5-2.9 3.7-0.3 0.6-0.2 1.2-0.3 0.3-1.1 0-3.4-4.6-1.5-1.1-1.8-0.4-2.1-0.1-2.6-0.7-3.3-1.3-1.1-0.8-0.5-0.6 0.2-0.8 0-1 0.1-0.4 0.2-0.4 0.3-0.2 1.1-0.5 2.9-4.6 1.2-1.2 1.8-0.5 7.8-5.1 2.4-1 0.8-0.4 0.5-0.5 0.2-0.4 0.1-1.1-2-3.3-1.1-0.6-0.4 0.2-1.3 0.9-1.2 0.4-0.5 0-0.3-0.1-0.2-0.3-0.2-0.5-0.1-0.3-1-1.6-2.6-3.1-1.3-2.1-2.5-3.2-1-1.4-1.7-3.7-0.7-2.5 0.6-4.1-0.1-0.6-0.2-0.9-0.8-1.6-0.2-0.6 0-0.6 1-3.6 0.4-1.2 1.7-3.1 0.2-0.8-0.1-0.6-0.2-0.2-1-0.8-0.6-0.9-0.9-2.5-2.8-1.8-1.2-0.2-0.4 0.2-0.4 0.1-1 0.6-2.2 0.7-3 0.5-1.3 0.1-0.9-0.1-1-0.7-0.3-0.2-1-1.2-3.5-5.7 2.5-4.8 0.3-1.6-0.4-0.7-0.2-0.3-0.5-1.1-0.6-3 2.4-8.8-3.4-6.9-1.2-1.9-9-7-2.9-1.4-8.6-2.3-2.2-0.9-1.7-1.9-4.2-3.7-0.5-0.6-0.9-1.4-0.5-1.1-0.7-4.3-1.8-3.3-2.3-3.6-0.9-1-1-0.7-2.2-0.9-1.7-0.5-8.4-2-2.5-0.8-1-0.8-1.1-1.1-4.7-3.2-1.2-0.6-1-0.4-1-0.1-1 0.1-2 0.2-3.4 0.9-4.1 0.3-4.8-0.1-3.8-7.8-1.4-2.1-0.7-0.5-0.4-0.2-0.4-0.2-0.4-0.1-3.5-0.5-1-0.3-3.8-2.3-1.8-1.3-7.2-8.4-0.2-0.3-0.3-0.6-0.1-0.5 0.1-0.3 0.6-0.7 5.4-0.4 1.4-0.7 0.5-0.7 0.3-0.7 12.4-8.5 7.5-8.5 0.6-0.5 0.4-0.1 0.6-0.1 1-0.3 1.2-0.3 0.3-0.3 22.7 8.4 25.5 9.5 3.6 0.4 3.7-1.4 16.3-10.8 11.7-7.7 5-1.2 2.8 1.2 6 4.4 2.7 0.4 3.4-0.2 3.7 1.2 7.8 3.4 0.9 0.3 0.8 0.3 0.8 0.4 0.6 0.5 3.6 4.5 1.4 1.1 1.4 0.9 1.7 0.6 1.7 0.2 1.5-0.6 8.5-5.6 1.3-0.8 1.5 0.8 0.4 1.2 0 1.6 0.3 2 0.7 1.1 2.1 2.7 0.4 1.1 1.7 1.6 7.3 2.8 1.7 1.2 1.4 1.5 3 1.6 2.8 2.3 0.5 3.8-2.1 1.2-0.7 0.4-0.7 1.3 0.3 0.9 0.6 0.7 0.4 0.5 3.5 2.8 0.8 1.1 1.8-1.3 2.4 0.1 1.1 0.1z"></path>
-                                <!-- Guanacaste -->
-                                <path id="Guanacaste" class="province-path fill-slate-200" d="M437.4 70.7l-0.3 0.3-1.2 0.3-1 0.3-0.6 0.1-0.4 0.1-0.6 0.5-7.5 8.5-12.4 8.5-0.3 0.7-0.5 0.7-1.4 0.7-5.4 0.4-0.6 0.7-0.1 0.3 0.1 0.5 0.3 0.6 0.2 0.3 7.2 8.4 1.8 1.3 3.8 2.3 1 0.3 3.5 0.5 0.4 0.1 0.4 0.2 0.4 0.2 0.7 0.5 1.4 2.1 3.8 7.8 4.8 0.1 4.1-0.3 3.4-0.9 2-0.2 1-0.1 1 0.1 1 0.4 1.2 0.6 4.7 3.2 1.1 1.1 1 0.8 2.5 0.8 8.4 2 1.7 0.5 2.2 0.9 1 0.7 0.9 1 2.3 3.6 1.8 3.3 0.7 4.3 0.5 1.1 0.9 1.4 0.5 0.6 4.2 3.7 1.7 1.9 2.2 0.9 8.6 2.3 2.9 1.4 9 7 1.2 1.9 3.4 6.9-2.4 8.8 0.6 3 0.5 1.1 0.2 0.3 0.4 0.7-0.3 1.6-2.5 4.8-2.5-2-0.7-0.3-0.9-0.3-0.8-0.1-1.2 0.1-0.7 0.1-0.5 0.2-0.9 0.7-1.4 1.4-0.6 0.5-1.4 0.8-0.9 0.6-0.7 0.7-0.5 0.7-0.3 0.5-0.1 0.5 0 0.5 0.1 0.4 0.2 0.3 0.2 0.4 1.2 1 0.2 0.3 0.1 0.5 0.1 0.4-0.1 0.4-0.7 2.1-0.4 3.1-0.1 0.5-1 2-0.1 0.6 0 0.4 0.1 0.4 0.1 0.4 0.2 0.3 0.5 0.6 0.3 0.4 0.1 0.6-0.1 1.2-0.3 0.5-0.3 0.5-3 1.3-0.7 0.4-2.9 2.6-0.7 0.9-0.4 0.7-0.2 1 0 0.5 0.2 0.9 0.6 1.7 0.1 0.6-0.3 0.3-0.4 0-0.4-0.1-0.4-0.1-1.5-0.8-1.2-1-0.6-0.6-1.9-2.4-1.2-1-0.3-0.3-1.4-0.8-0.8-0.3-0.5-0.1-0.5 0-0.6 0.1-0.8 0.3-0.3 0-0.4 0-0.4-0.1-0.4-0.1-0.3-0.3-0.6-0.4-0.3-0.2-0.5-0.1-0.4 0-0.9 0.2-1 0.1-0.5 0-0.5-0.1-1.3-0.1-3.1 1-0.7-0.5-0.6-0.3-2.1-1.9-2.9 1-10.6 0.1-2.9-0.7-2.5-1.8-3.9-4.1 0-1 0.9-3-2.8-3.3-6.8-4.8 1 3.3 4.6 3.3 1 3.9 0.4 7.5 1 4.3 1.8 3-2 1.3 0.3 2.3 1.8 2.1 4.9 1.7 1.7 1.8 2 4 1 0 1.3-0.5 0.6 0.4 0.2 1.1-1.4 0.1-1.4-0.1-1.3-0.4-1.2-0.6 0 1 3 2.7-1.6 5.2-1 1.3-3.4 0.8-0.8 0.4-4.1 2.3-0.7 0.2-0.4-0.1-0.3-0.3-0.2-0.3-0.3-0.2-1.1 0.1-1.6 0.5-3.9 1.9-1.4 1.3-0.7 1.3 0.3 0.9 0.5 0.7 0.6 0.5 0.7 0.4 0.6 0.1 1.5-0.2 0.5 0 0.5 0 1.4 0.3 0.4 0.1 0.7 0.4 0.4 0.2 0.4 0.1 1.5 0 0.9 0.2 1.1 0.6 1.2 0.4 0.3 0.2 0.3 0.2 0.7 1 0.9 0.8 0.4 0.7 0.2 0.3 0.2 0.4 0.3 0.7 0.2 1 0.2 0.9 0.2 0.3 0.3 0.2 0.4 0.2 2.3 0.5 0.3 0.3 0.1 0.4-0.5 1-0.6 1.7-1.6 6.1 0 1 0.2 0.7 0.4 0.5 0.1 0.3-0.1 0.3-0.9 0.8-0.4 0.4-0.3 0.7-0.4 1.4-0.4 0.7-0.4 0.4-0.4 0.3-0.4 0.4-1 2.1-0.4 0.2-0.4 0.1-0.9 0.4-0.4 0.5-0.8-2-0.7-0.8-1.5-0.9-3.9-1.6-0.3-1.3 0-1.5-0.1-1.1-3.8-4.1-5.2-3-17-6.1-1.5 0.3-2.3 1.6-1 0.4-1.5-0.4-2.1-1.5-1.8-0.4-1-0.1-0.3-0.2-0.2-0.5-0.6-0.7-1.1-0.6-0.9 0.3-0.7 0.5-0.1 0.3-8.9-2.9-4.3-0.6-1-0.7-0.8-0.7-1.2-0.7-1.8 0.1-1.2 0.7-1 0.1-1.4-1.9 1.1-2.9-1.7-4.1-16.1-19.9-1-1.8-1.3-4.3-1.9-3-6.2-15.2-0.5-4.5-0.7-2.8-0.9-2 2.2-2.1 0.9-1.6-0.4-1.3-3.3-4.3-2.2-1.3 1.2-1.5 2.8-2.2 1.8-2.7 1.3-2.7 2.7 1.1 1.5-1.7 1.1-2.5 3.4-2.6-1.3-2.8-2.4-3-1.7-1.7 1-0.7 0.4-0.3 0.8-0.1 0-1.1-2.2 0 0-1.1 1.8-0.4 1.2-1.1 1.3-3 1.1 0 2.2 1.8 3.1-1.3 3.2-1.8 2.4 0.3 1 0-0.2-2.1 0.5-1 0.9-0.6 0.8-0.7 1.5-2.5 0.5 0.1 2 0.2 4.7-5-0.3-1.3-0.8-1-2.1-1.5-6.5 6.6-0.1-0.5 0-0.5-0.2-0.3-0.7 0.1 0-1 1.8-2 1.1-0.8 1.4-0.5-1.1-1.1-0.1 0.2-0.3 0.3-0.3 0.3-0.5 0.3 0.4-1.3 0.1-0.5 1.8-0.5 0-1-1.1 0 0-1.2 2.6-2.1 0.6-5.4-0.9-10.6-2.4-2.8-5.2-2.4-5.3-0.8-2.3 1.6-1 0-4.3-3.6-1.3-1.4 0.7 0.3 1-0.5 0.4-0.9-0.9-1.1-1.2-0.3-3 0.3-1.3 0-4.7-1.7-3.6-2.2-4.1-1.8-5.9-0.8 0-1.2 3.5-0.9 6.7-3 3.8-0.5-0.6-0.9-0.5-0.7-0.7-0.3-1.5-0.3 0-1 7.9-0.5 1.9 0.5 0.9 1.2-0.2 1.4-0.4 1.2 0.3 0.5 0.6 0.3 2.1 1.9 1 0 1.1-1.2 0-1-1.8-1.8 1.8-1.1 3.3-0.5 3.2 0.1 1.1 0.6 1.4 1.4 1.3 0.2 1-0.3 0.4-1-0.1-1.1-0.8-0.8 0-1.2 2.3-0.9 0.7-1.8-0.5-2.1-1.3-1.8-1.2-0.9-2.6-1.1-1.2-0.8-1.3-1.4 0-0.4 0.8-0.1 1.1-0.8 2.4-2.3 1.4 0.8 1.6 1.5 3.2 0 1.9-1.8-0.4-2.3-1.7-2.3-2-1.4-1.3-0.6 3.8-6.2 2.9-6.3 4.4-6 5.3-2.2 4.5 2.3 4.5 4 5.1 2.9 16 6 21.3 7.9 5.6 2.1z"></path>
-                                <!-- Limón -->
-                                <path id="Limón" class="province-path fill-slate-200" d="M669.9 115.6l10.4-2.5 5.5-2.8 0.5-4.4-1.4-5.7-0.1-3.6-1.6-0.8 0.5-2.1-0.3-1-0.4-0.1-1.2-2.9-1.2-0.3 1.5-0.2 0.8 0.4 0.5-0.1 0.9 0.5 0 0.3-0.4 0.3 0 0.5 0.6-0.1 0.8-0.7 0.2-0.7 0.7 0.2 2.6 1.3 3.2 3.7 4 7.5 2.9 7.9-0.4 5.1-2.3-2.9-4.2-10.3 2.7 12.9-0.3 5.1-4.5 4 2.4-0.5 1.6-1.1 1.6-1.4 2-1.3-0.7 0.8-0.2 1 0.3 1.1 0.6 1.4 0.6-1.9 0.7-3.7 0.9-2 7.6 21.2 9.6 22.8 11.3 19 30.2 39.6 2.4 1.8 10 12.4 6.2 6.1 3.8-2.1 1.4 1 4.2 0.7 0.9 1.2 0.1 3 0.5 2.5 1.1 2.2 2.1 2.2 7.3 10.9 2.4 1.7 9.1 12.3 6.9 6.5 4-1.2 0.9 2.5 0.9 6.5 1.4 2.9 2.5 1.9 10.6 3.7 3.7 0.4 3.7-0.1 3.5 0.2 3.1 1.7 3.9 6 2.7 1.6 0.1 0.1 1.7 6-0.5 0-0.7 0.1-2.4-1.3-2.4-0.4-0.4 0.6-0.7 1.1-0.7 5.9 0 0.3-1 2-2.1 0.3-2.9-0.5-2.8-0.8-1.6-0.8-1.5-1.7-0.1-0.1-2-3.8-0.1-0.1-1.6-1.8-0.1 0-0.7 0.4-0.4 0.2-1.6-0.6-6.5-5.6-0.7-0.3-1.1-0.4-3.9-1.6-1.4-0.5-2.1-0.9-2.9 0.4-2.9 2.5-1.8 2.5-0.3 1.5 0.6 1 0.8 1.5 0.5 0.9 0.8 3.3 0.3 1.1 0.7 0.9 1 0.3 0.4 0.3 0.3 0.2-0.2 1.3-0.5 0.2-1.9 1.1-8.4 1.2-3 1-0.8 1.4-0.5 0.9-0.4 3 0.2 13.3 0.2 19.2 0.4 26.2-0.1-0.1-1.5-1.3-0.5-0.3-2.6-0.8-2.6-2.7-0.8-1.2-1-2.7-0.9-1.4-0.6-0.4-1-0.4-5.4-1.5-0.5-0.3-0.5-0.4-0.4-0.9-0.3-0.5-1.7-8.6-0.5-1.6-0.4-0.7-0.2-0.3-0.3-0.3-0.4-0.2-5.6-3.3-0.6-0.4-1.2-1.1-6.1-8-0.7-0.2-1.1-0.1-3.4 0.2-2.1 0.4-0.6 0-0.8-0.1-1.1-0.4-2.5-1.2-1.5-1-0.8-0.4-2.9-1-0.8-0.4-0.3-0.2-0.4-0.2-2.9-2.5-0.7-0.5-0.8-0.4-0.5 0-0.7 0.1-1.1 0.6-0.6 0.4-0.4 0.4-1.9 2.6-0.2 0.3-0.7 0.2-3 0.3-0.8 0.2-0.6 0.3-0.6 0.6-0.3 0.2-0.3 0.2-0.4 0.1-0.3-0.2-0.4-1.2-0.1-0.6-0.2-0.4-0.5-0.5-0.5-0.3-4.2-1.2-1.9-1.4-0.6-0.5-1.3-1.9-5.2-14.4-0.6-1.7-1-2.2-0.4-0.4-0.5-0.6-0.3-0.4-0.9-2.2-0.3-1.9-0.4-1.6 0.6-4.9 2.2-4.5 9.1-11 3.5-9 1.3-2 4.8-5.8 6.7-8.4 1-2.8-0.4-2.9-1.8-5.7-0.2-3.5 0.5-2.8 1.2-2.7 2-2.8 0.4-0.6-3.2-0.7-16.7-0.4-22.8-0.2-4.1-1.5-15.5-7.2-9.5-4.5-6.9-3.3-19.8-9 2.1-7.2 1.1-1.4 1.4-1.4 7.4-8 0.5-0.8 2-4.1 0.4-1.2 0.2-0.8-0.1-0.5 0.1-1.9 0.5-2.3 0.2-1.2-0.1-0.8-0.1-0.3-0.5-0.6-0.4-0.7-0.3-0.8-0.5-1.7-2.1-4-0.2-0.6-0.4-2.3 0.1-1 0.1-0.7 0.6-1.1 0.4-0.7 1.3-2.4 0.3-0.4 0.4-0.2 0.4 0 0.4-0.1 0.4-0.2 0.3-0.3 0.6-0.6 1.4-2.2 0.9-3.4 0-0.8 0-0.4-0.7-1.6-0.1-0.5 0-0.5 0.1-1.3 0.1-0.6-0.1-0.4-0.2-0.4-0.2-0.3-0.5-0.6-0.2-0.4-0.2-0.3 0-1 0.9-6.9-0.1-1.5 0.2-4.9 0.2-1.4 0.3-1 0.2-0.3 0.6-0.5 1.4-0.9 1.5-0.8 0.6-0.4 1.6-1.8 2.7-1.7 1.6-0.5 0.9-0.2 4.6-0.4 1.7-0.5 0.6 0 0.6 0.1 0.7 0.2 0.1-0.1 0-0.3-0.3-0.5-0.4-0.5-0.6-0.5-1.3-0.8-0.7-0.5-0.5-0.6-0.5-0.6-0.1-0.6-0.1-0.7 0.5-3.3 0-0.5-0.1-0.6-0.5-0.7-0.6-0.7-0.7-0.8-0.4-0.3-0.4-0.2-0.5-0.2-1.8-0.5-0.5-0.4z"></path>
-                                <!-- Puntarenas -->
-                                <path id="Puntarenas" class="province-path fill-slate-200" d="M508.5 189.2l3.5 5.7 1 1.2 0.3 0.2 1 0.7 0.9 0.1 1.3-0.1 3-0.5 2.2-0.7 1-0.6 0.4-0.1 0.4-0.2 1.2 0.2 2.8 1.8 0.9 2.5 0.6 0.9 1 0.8 0.2 0.2 0.1 0.6-0.2 0.8-1.7 3.1-0.4 1.2-1 3.6 0 0.6 0.2 0.6 0.8 1.6 0.2 0.9 0.1 0.6-0.6 4.1 0.7 2.5 1.7 3.7 1 1.4 2.5 3.2 1.3 2.1 2.6 3.1 1 1.6 0.1 0.3 0.2 0.5 0.2 0.3 0.3 0.1 0.5 0 1.2-0.4 1.3-0.9 0.4-0.2 1.1 0.6 2 3.3-0.1 1.1-0.2 0.4-0.5 0.5-0.8 0.4-2.4 1-7.8 5.1-1.8 0.5-1.2 1.2-2.9 4.6-1.1 0.5-0.3 0.2-0.2 0.4-0.1 0.4 0 1-0.2 0.8 0.5 0.6 1.1 0.8 3.3 1.3 2.6 0.7 2.1 0.1 1.8 0.4 1.5 1.1 3.4 4.6-1.4 1.2 1.5 0.6 1.1 0.7 0.7 0.5 0.5 0.5 0.3 0.3 0.9 1.3 0.8 1.5 0.1 0.6 0.1 0.9-0.2 1.3-0.3 0.6-0.3 0.4-0.3 0.3-0.4 0.1-0.4 0.1-0.5 0.1-3-0.2-1 0.1-0.4 0.2-0.4 0.2-0.3 0.2-0.2 0.4-0.1 0.3-0.1 0.5 0.1 0.4 1.2 4 0.4 2-0.1 3.1 0 0.5 0.4 0.9 3.5 6.2 0.1 0.3 1.1 5.4 0.4 1.2 0.7 1.5 1 1.3 1.1 1 0.5 0.4 1.6 0.2 4.9-0.8 1.1 0.4 0.4 0.1 0.6 0 2.5-0.7 0.5 0 0.5 0.1 0.3 0.2 0.4 0.2 0.7 0.8 0.3 0.3 0.4 0.2 0.4 0.1 0.4 0.1 0.5-0.1 0.4-0.2 0.5-0.4 0.9-1.9 0.3-0.4 0.4-0.4 1.8-1.4 0.5-0.6 0.4-0.4 0.1-0.4 0.1-1-0.5-3.2 0-0.4 0.4-0.2 0.9-0.2 1.8 0 4.2-0.8 6.7-0.3 2.3 0.2 0.9 0.7 0.6 0.5 1.1 1.3 0.2 0.3 1.7 0.3 5.6-0.2 2.1 0.9 2.3 0.2 7.1-0.6 1.4 0.1 0.4 0.2 0.5 0.4 0.4 0.7 0.4 1.3 0 0.7 0 0.6-0.3 1.4-0.1 1 0 0.5 0.3 0.6 0.5 0.6 1.2 1.1 1.3 0.5 0.7 0.1 1.4-0.2 2.1-0.1 1.4 0.2 0.8 0.3 0.4 0.3 0.4 0.6 0.3 0.8 0.3 2 0 1-0.1 0.7-0.4 0.7-0.4 0.8 0.6 1 3.5 1.6 2.5 4.9 3.6 3.6 10.4 6.9 2.4 0.8 0.2-0.4 0.3-0.3 0.3-0.2 0.3-0.3 0.4-0.1 0.4-0.2 0.4 0 0.5 0 0.4 0.1 0.5 0.3 0.6 0.6 1.1 2 0.2 0.7 0.7 3 0.2 0.4 5.1 5.2 1 1.4 0.6 1-0.2 1.6 0 1 0.2 1.8 1.1 3.2 0.7 1.5 0.4 0.7 0.6 0.6 1.1 1 7.9 3.6 1.1 0.3 0.5-0.1 0.4-0.1 0.3-0.2 0.2-0.3 1.4-2 0.3-0.2 0.4-0.2 0.4-0.2 0.5-0.1 0.5 0 0.4 0 0.4 0 0.5 0.1 1.5 0.8 2.2 2.1 3.6 4.4 0.5 1 0.1 0.4 0.1 0.4 1.2 4.2 0.1 0.3 0.5 0.6 1 1.3 14.4 9.3 0.3 0.2 1.7-0.1 1.4-0.2 0.4-0.1 0.5 0.1 0.4 0.2 0.7 0.5 0.7 0.8 0.3 0.3 0.7 0.4 0.4 0.1 0.4 0.1 0.5 0 0.3-0.2 0.3-0.2 0.3-0.2 1.7-2.4 0.6-0.6 0.5-0.3 0.3-0.2 0.4-0.2 0.3-0.3 0.2-0.6 0.1-0.8-0.5-3.7 0.1-0.6 0.3-0.9 1.2-2.2 0.3-1-0.1-1.9-0.2-0.9-0.2-0.6-0.2-0.3-0.1-0.5-0.2-0.3-0.3-0.2-0.4 0-0.4 0-0.4 0-0.4-0.1-0.3-0.2-0.2-0.3-0.3-0.3-0.4-0.1-1.4-0.3-0.3-0.2-0.2-0.3 0-0.5 1.5-8 0.1-0.4 0.6-0.8 4.3-4.9 0.3-0.6 0.4-0.9 1.1-3.9 0.5-0.9 0.4-0.6 3.4-3.6 4.2 1.2 0.5 0.3 0.5 0.5 0.2 0.4 0.1 0.6 0.4 1.2 0.3 0.2 0.4-0.1 0.3-0.2 0.3-0.2 0.6-0.6 0.6-0.3 0.8-0.2 3-0.3 0.7-0.2 0.2-0.3 1.9-2.6 0.4-0.4 0.6-0.4 1.1-0.6 0.7-0.1 0.5 0 0.8 0.4 0.7 0.5 2.9 2.5 0.4 0.2 0.3 0.2 0.8 0.4 2.9 1 0.8 0.4 1.5 1 2.5 1.2 1.1 0.4 0.8 0.1 0.6 0 2.1-0.4 3.4-0.2 1.1 0.1 0.7 0.2 6.1 8 1.2 1.1 0.6 0.4 5.6 3.3 0.4 0.2 0.3 0.3 0.2 0.3 0.4 0.7 0.5 1.6 1.7 8.6 0.3 0.5 0.4 0.9 0.5 0.4 0.5 0.3 5.4 1.5 1 0.4 0.6 0.4 0.9 1.4 1 2.7 0.8 1.2 2.6 2.7 2.6 0.8 0.5 0.3 1.5 1.3 0.1 0.1 0 1.7 4.7-2 1.5 0 1.1 0.9 0.5 1.2 0.5 1.2 0.7 1 0.9 0.6 3.6 1.5 7.2 5.4 7.2 2.5 2.1 1.4 4.1 6.9 0.5 1.3 0.1 0.2-0.1 0.2-0.6 0.9-1.6 2.7-4.7 2.8-16.3 6.7-1.8 1.4-0.5 0.7-1.1 1.3 0.8 0.7 1.3 0.8-0.1 2.2-0.1 0.2-1.3 1.5-1.3 0.8-2 1.2-1.4 0.9-0.2 0.2-1.1 1.2-0.2 2.4 0.8 2.3 1.4 2.1 4.9 5.5 2.7 3.8 1.9 4.1 1.3 4.8 0.7 8.3 0.1 1.8 0.1 1.1-0.5 5.6-1.4 4.7-2.7 3.2-0.8 1.1-4.1 2-4.5 1.4-4.5 2.3-0.5 0.5-0.6 0.5-0.6 0.7-2.9 2.7-2.4 2.3-1 0.6-0.9 0.5-5.3 3-1 0.8-0.4 0.3-0.2 2 1.5 1.6 4.4 2.6 0.8 0.9 1.5 2.2 0.9 0.7 1 0.1 1.9-0.8 1.5 0.2 2.7 1.5 1.1 1.6 0.7 5.1 5.2 11.4 2.7 6 0.1 0.2 0.4 0.7-0.8 7.1-0.4 1.3-0.6 2.3-2.2-1.7 0.3-2.4 1.2-2.7 0.7-2.4-0.5-2-10.7-18.5-3.8-4-19.6-14.3-5.4-5.3 4.6-5.7 0.9-0.5 0.9-1.6 1.7-2.1 1.1-2.5-1-2.5-5.2-6.5-0.8-1.8-0.1-2.4 1.1-0.8 2-0.6 2.4-1.6-1.8-0.5-4.6 0.2-2.3-0.8-1.2-1.4-3.1-6.2 0.5-0.8 0.3-0.6 0.3-0.9 1.1 0 1.5 2.6 0.4 1.3 0.2 2.1 0.7 0.4 4.7-1.9 0-1.2-2.1-0.9-2.3-1.7-2-2-1.1-1.9-1.1 0-1.2 1.9-2.9 0.1-3.3-0.3-2.4 0.5-1.2-2.2-1.8-2.2-2.2-1.2-2.3 1.2-5-3-1.4-2.4 1-3.3-1.1-0.1-1.1 0.1 0.7-2.6-2.3-1.3-3.3-0.7-2.6-0.9-1 1.9-0.8-0.1-1.1-0.8-1.5 0-0.8 0.9-0.2 1.1-0.6 1-2.2 0.4-5.2-0.8-2.1 0.8-0.8 3.2 1.2-1 0.9 0 5.6 8.3 0.7 2.6 3.3 5.1 1.2 1.5 2.1 1.1 5.9 1.8 2.4 0.3 2.1 1.3 2.1 2.5 2 1.7 1.9-1.2 0.1 4-0.3 1.6-0.9 1.1 0 1.1 2.3 3.2 1 5.6-0.4 5.8-1.8 4-3.5 0.1-5.8-1.8-5.4-2.7-2.6-2.1 1 0 0.7 0.5 0.6 0.3 2.1 0.2-3-1.3-1.3-0.8-1.3-1.2 0 2.3-9.1-4-3.2-0.5-9.7 1.2-2.7 0-2.2-1.1-2.2-2.2-3.8-5-13.7-12.8-0.9-1.5-0.7-0.1-3.2-1.4-1-0.6-0.5-4.9 4.8-7.5 1.1-1.3 2.5-1.4 1.7-0.7 0.8 0.5 0.5 0.9 1.1-1.1 3.8-5.9 1.1-1.1-2-2.5 2.4-2.9 4.3-2.3 3.9-1 0-1-3.4-0.4-1.8 0.1-1.1 1-1.9 2-1.8 0.8-0.6-1.5 0.7-2.7 2.2-2.7 3.9-1.9 1.8-1.2 0.8-1.8-1-1.7-2-1.1-1.9-1.5-0.4-2.8 3.1 1.6 1.4 0.5 2 0-1-1.2-1.2-0.9-2.2-1.2-1-0.8-0.5-0.7-0.9-0.5-1.8-0.1 1.9-1.2-0.3-0.8-1.1-0.7-0.5-0.5 0.7-1.8 0.8-1.3 1.1-1.1 1.6-1.4-4.2-11-0.8-1.4-2.6-2.8-1.1 1-3.5-4.6-3.2-5.4-4.2-4.2-6.3-1.1 0.4-4.2-3.5-3.5-4.8-2.4-3.5-1-12.4-11.9-12.2-5.7-1.9-1.5-15.2-6-1 0-1 0.8-0.9 0-0.7-0.7-0.6-1.3-2.2 1-1.3-1.1-1.5-1.5-2.7-0.5 1.7-2.9-2.2-4.2-4.1-3.6-4-1.4 0 1.1 1.4 0.3 0.9 0.4 2.1 1.5-4.1-0.7-6.5-3.9-4.1-0.9-4-0.3-21.1-5.9-4.1-0.3-1.9 0.3-2 0.7-2.1 0.4-2.1-0.3-1.9-1.6-0.6-1.9-0.7-1.5-2.2-0.5 0.4 0.6 0.2 0.5 0.4 1.2-2.6-2.1-5.9-3.8-1.1-2.4-0.6-2.2-1.4-1.1-1.7-0.7-1.7-1-0.6-1.6 0.3-1.7-0.5-1.1-2.4 0.1 0.6-1.8-0.2-1.8-0.4-1.6 0-1.5 0.9-1.8 2.7-2.7 1.1-2.7 1.1-1.3 1.1-1.8 0.5-2.3-0.5-1.9-1.3-1.7-2.4-2.4-6.4-9.6-1.8-1.4-2.6-1.1 0.4-2.4 2.2-3.7-3.9-3.2-0.7-1.6 0.8-2.3-4.5-1.4-14 1.4 0-1.2 2-0.8 2.4-0.2 5.5 0 0-1.1-5-0.2-4.5-0.8-4.1-1.4-3.7-2.1-4.8-3.9-0.7-0.9-1-0.2-2-1.4-1.5-1.5 0.8-0.7-2.6-1.4-6.5-6.1-3.5-1.7-1.6-1.5-1-0.4-0.8 0.4-0.7 0.6-0.9 0.1-1.3-1.1 0.9-1.7 0.3-1.1 3.1-1 1.3 0.1 0.5 0.1 0.5 0 1-0.1 0.9-0.2 0.4 0 0.5 0.1 0.3 0.2 0.6 0.4 0.3 0.3 0.4 0.1 0.4 0.1 0.4 0 0.3 0 0.8-0.3 0.6-0.1 0.5 0 0.5 0.1 0.8 0.3 1.4 0.8 0.3 0.3 1.2 1 1.9 2.4 0.6 0.6 1.2 1 1.5 0.8 0.4 0.1 0.4 0.1 0.4 0 0.3-0.3-0.1-0.6-0.6-1.7-0.2-0.9 0-0.5 0.2-1 0.4-0.7 0.7-0.9 2.9-2.6 0.7-0.4 3-1.3 0.3-0.5 0.3-0.5 0.1-1.2-0.1-0.6-0.3-0.4-0.5-0.6-0.2-0.3-0.1-0.4-0.1-0.4 0-0.4 0.1-0.6 1-2 0.1-0.5 0.4-3.1 0.7-2.1 0.1-0.4-0.1-0.4-0.1-0.5-0.2-0.3-1.2-1-0.2-0.4-0.2-0.3-0.1-0.4 0-0.5 0.1-0.5 0.3-0.5 0.5-0.7 0.7-0.7 0.9-0.6 1.4-0.8 0.6-0.5 1.4-1.4 0.9-0.7 0.5-0.2 0.7-0.1 1.2-0.1 0.8 0.1 0.9 0.3 0.7 0.3 2.5 2z m-69.9 94.7l0.4-0.5 0.9-0.4 0.4-0.1 0.4-0.2 1-2.1 0.4-0.4 0.4-0.3 0.4-0.4 0.4-0.7 0.4-1.4 0.3-0.7 0.4-0.4 0.9-0.8 0.1-0.3-0.1-0.3-0.4-0.5-0.2-0.7 0-1 1.6-6.1 0.6-1.7 0.5-1-0.1-0.4-0.3-0.3-2.3-0.5-0.4-0.2-0.3-0.2-0.2-0.3-0.2-0.9-0.2-1-0.3-0.7-0.2-0.4-0.2-0.3-0.4-0.7-0.9-0.8-0.7-1-0.3-0.2-0.3-0.2-1.2-0.4-1.1-0.6-0.9-0.2-1.5 0-0.4-0.1-0.4-0.2-0.7-0.4-0.4-0.1-1.4-0.3-0.5 0-0.5 0-1.5 0.2-0.6-0.1-0.7-0.4-0.6-0.5-0.5-0.7-0.3-0.9 0.7-1.3 1.4-1.3 3.9-1.9 1.6-0.5 1.1-0.1 0.3 0.2 0.2 0.3 0.3 0.3 0.4 0.1 0.7-0.2 4.1-2.3 0.8-0.4 3.4-0.8 1-1.3 1.6-5.2 3.6 3.2 9.5 3.9 1.3 0.7 1.1-0.4 2.5 1 6.1 3.5 2.8 0.9 3 0.1 2.9-1.2 1.8 1.5 4 2.5 1.8 1.5 0 1-3.1 0.8 0.1 2.3 1.9 2.7 2.1 2-1.3 0.4-1.2 0.9-1.9 2 2.3 1 2.8 0.3 5.7-0.1 0 1-2.3 1.5-2.8 1.2-2.4 1.6-1.1 2.8-0.6 0.7-3.7 2.1-0.7 1.2-0.8 2.9-0.6 1.3-5-2.5-2.6-0.2-1.2 2.1 0.7 1.3 2.5 3.1-0.4 0.7-5.1 2.5-0.9 0.2-0.6 0.8-3.7 1.9-0.8 1.3-3.4 11-1.5 2.8-1.9 2.5-1.1 0-4.4-9.1-13.2-17.9 0-0.1z m15.4-59.9l1.6 0.3 0.9 0.8 1.2 0.3 1.7 0 0 1-1.9 0.7-2.4 0.6-2.7 0.2-2.7-0.3-2.7-1.2-1.5-1.4-2.2-4.1 3-1 1.3-0.1 5.1 0.9 4.6 1.4 0 1.1-5.4 0 1.5 0.8 0.6 0z m-310.6 730.4l-2.9 0.1 2-3.5 1.9-1.5 2.2-1.3 2.2-0.4 0 1.6-0.1 2-2.1 2.3-3.2 0.7z m505.6-507.7l2-1 2.3-0.1-0.2 1.9-1.2 0.5-2-0.4-0.9-0.9z"></path>
-                                <!-- Heredia -->
-                                <path id="Heredia" class="province-path fill-slate-200" d="M601.1 246.6l-0.3-1.4 0-0.8 0-0.5 0.1-0.5 0.8-1.2 2.9-3.1 0-0.4 1.9-24.3 0.2-22 0.3-18.4 0.3-25.8 0.4-34.3 0-0.7 1.4 0.2 1.9-0.3 3 2.9 1.8 0.7 1.8-1.4 1.1 0 1.9 1.9 3.9-2.5 2.7 0.6 1.9-1.9 2.1-0.3 1.7 1.2 0.8 2.7 9.5 7.6 1 0.5 1.5 0.2 1.6-0.3 2.2-1.6 1-0.3 4.3 0.9 0.6-0.4 3.2-3.8 10.5-4 0.8-0.2 0.5 0.4 1.8 0.5 0.5 0.2 0.4 0.2 0.4 0.3 0.7 0.8 0.6 0.7 0.5 0.7 0.1 0.6 0 0.5-0.5 3.3 0.1 0.7 0.1 0.6 0.5 0.6 0.5 0.6 0.7 0.5 1.3 0.8 0.6 0.5 0.4 0.5 0.3 0.5 0 0.3-0.1 0.1-0.7-0.2-0.6-0.1-0.6 0-1.7 0.5-4.6 0.4-0.9 0.2-1.6 0.5-2.7 1.7-1.6 1.8-0.6 0.4-1.5 0.8-1.4 0.9-0.6 0.5-0.2 0.3-0.3 1-0.2 1.4-0.2 4.9 0.1 1.5-0.9 6.9 0 1 0.2 0.3 0.2 0.4 0.5 0.6 0.2 0.3 0.2 0.4 0.1 0.4-0.1 0.6-0.1 1.3 0 0.5 0.1 0.5 0.7 1.6 0 0.4 0 0.8-0.9 3.4-1.4 2.2-0.6 0.6-0.3 0.3-0.4 0.2-0.4 0.1-0.4 0-0.4 0.2-0.3 0.4-1.3 2.4-0.4 0.7-0.6 1.1-0.1 0.7-0.1 1 0.4 2.3 0.2 0.6 2.1 4 0.5 1.7 0.3 0.8 0.4 0.7 0.5 0.6 0.1 0.3 0.1 0.8-0.2 1.2-0.5 2.3-0.1 1.9 0.1 0.5-0.2 0.8-0.4 1.2-2 4.1-0.5 0.8-7.4 8-5.8 0.6-3.1 4-1 1-0.7 0.2-3.5 0.3-3.1 0.6-6.9 0.6-0.8 0.3 0.1 0.8 0.6 1.3 3.6 5.4 2.1 2.2 0.4 1.3 0.2 3.9 1.3 1.4 0.8 0.6 0.5 0.6 0.2 1.2-1 3.2-2 5.3-3 1.8-4.2 1.4-1.6 0.3-4.1-0.4-0.7 0.1-5.8 2.6-1.8-0.8-3.1-1.5-2.8 0.4z"></path>
-                                <!-- San José -->
-                                <path id="San José" class="province-path fill-slate-200" d="M542.5 267.9l1.1 0 0.3-0.3 0.2-1.2 0.3-0.6 2.9-3.7 0.1-0.5-0.1-0.4 0.5-0.6 1-0.8 2.7-1.4 1.9-1.8 0.2-0.4 0.1-0.2 1.3-0.8 4.9-2.2 7-0.5 3.8-0.8 3.1 0.9 3.1 0.5 0.6 0.2 0.8 0.2 1.9 0.2 0.8 0.3 2.8-0.4 10.6-3 4.4-1.4 2.3-2.6 2.8-0.4 3.1 1.5 1.8 0.8 5.8-2.6 0.7-0.1 4.1 0.4 1.6-0.3 4.2-1.4 3-1.8 2-5.3 1-3.2-0.2-1.2-0.5-0.6-0.8-0.6-1.3-1.4-0.2-3.9-0.4-1.3-2.1-2.2-3.6-5.4-0.6-1.3-0.1-0.8 0.8-0.3 6.9-0.6 3.1-0.6 3.5-0.3 0.7-0.2 1-1 3.1-4 5.8-0.6-1.4 1.4-1.1 1.4-2.1 7.2 2.2 7.7 0.4 0.6 0.6 0.7 1.3 1.3 1.4 0.9 0.7 0.4 0.3 0.2 3.2 3.6 0.6 0.9 0.4 1.4 0.3 4.2 0.7 3.5-0.3 1.3-0.5 0.7-0.6 0.5-0.9 0.3-1.9 0.2-2 2.2-0.5 0.2-0.6 0.1-0.5-0.1-0.3-0.2-1.5-0.3-4.1 0.1-0.2 0.1-7.2 2.6-4.2 6.9-0.3 1.3 0.3 0.2 0.6 0.3 3.1 1.4-4.5 7.4-1.2 1.3-1.9 1.3-2.8 2.6-1.1 1.7-0.5 1-0.1 0.7 0 0.5 0.1 0.5 0.2 0.4 0.2 0.3 0.4 0.2 0.4 0 0.5-0.1 1.9-0.7 1.3-0.4 0.4 0 1 0.1 0.9 0.2 5.8-1.3 1.3 0.2 0.4 1.5 0.3 0.8 0.3 0.8 1 2 3.1 1 0.8 0.7 0.1 0.4 0.1 0.3 1.4 2.4 3.5 4.6 0.8 0.7 0.5 0.1 1.9 0.7 3.2 1.6 0.8 0.2 0.4-0.1 0.4-0.2 0.4-0.2 0.7-0.1 1.2 0.1 0.7 0.2 0.4 0.3 0.3 0.3 1.2 2 1.1 2.3 0.1 0.4 0.3 0.7 0.6 1.3 0.8 1.3 0.6 0.6 0.4 0.4 0.5 0.1 3.4 0.7 0.8 0 3-0.3 1.8 2.4 0.4 0.4 0.8 0.5 2.4 0.8 0.7 0.4 0.4 0.4 0.2 0.4 0.5 1.7 0.3 2.1 0.3 0.3 0.3 0 2.2-1.1 0.8-0.3 0.4-0.1 1.9 0.2 0.5 0 0.5-0.1 0.4-0.1 0.4-0.1 0.4-0.2 0.3-0.2 0.3-0.3 0.2-0.3 0.8-1.4 0.6-0.7 1.9-0.6 4 4.2 1.4 1.2 1.5 0.7 0.4 0.2 16.7 10.1 5.2 14.4 1.3 1.9 0.6 0.5 1.9 1.4-3.4 3.6-0.4 0.6-0.5 0.9-1.1 3.9-0.4 0.9-0.3 0.6-4.3 4.9-0.6 0.8-0.1 0.4-1.5 8 0 0.5 0.2 0.3 0.3 0.2 1.4 0.3 0.4 0.1 0.3 0.3 0.2 0.3 0.3 0.2 0.4 0.1 0.4 0 0.4 0 0.4 0 0.3 0.2 0.2 0.3 0.1 0.5 0.2 0.3 0.2 0.6 0.2 0.9 0.1 1.9-0.3 1-1.2 2.2-0.3 0.9-0.1 0.6 0.5 3.7-0.1 0.8-0.2 0.6-0.3 0.3-0.4 0.2-0.3 0.2-0.5 0.3-0.6 0.6-1.7 2.4-0.3 0.2-0.3 0.2-0.3 0.2-0.5 0-0.4-0.1-0.4-0.1-0.7-0.4-0.3-0.3-0.7-0.8-0.7-0.5-0.4-0.2-0.5-0.1-0.4 0.1-1.4 0.2-1.7 0.1-0.3-0.2-14.4-9.3-1-1.3-0.5-0.6-0.1-0.3-1.2-4.2-0.1-0.4-0.1-0.4-0.5-1-3.6-4.4-2.2-2.1-1.5-0.8-0.5-0.1-0.4 0-0.4 0-0.5 0-0.5 0.1-0.4 0.2-0.4 0.2-0.3 0.2-1.4 2-0.2 0.3-0.3 0.2-0.4 0.1-0.5 0.1-1.1-0.3-7.9-3.6-1.1-1-0.6-0.6-0.4-0.7-0.7-1.5-1.1-3.2-0.2-1.8 0-1 0.2-1.6-0.6-1-1-1.4-5.1-5.2-0.2-0.4-0.7-3-0.2-0.7-1.1-2-0.6-0.6-0.5-0.3-0.4-0.1-0.5 0-0.4 0-0.4 0.2-0.4 0.1-0.3 0.3-0.3 0.2-0.3 0.3-0.2 0.4-2.4-0.8-10.4-6.9-3.6-3.6-2.5-4.9-3.5-1.6-0.6-1 0.4-0.8 0.4-0.7 0.1-0.7 0-1-0.3-2-0.3-0.8-0.4-0.6-0.4-0.3-0.8-0.3-1.4-0.2-2.1 0.1-1.4 0.2-0.7-0.1-1.3-0.5-1.2-1.1-0.5-0.6-0.3-0.6 0-0.5 0.1-1 0.3-1.4 0-0.6 0-0.7-0.4-1.3-0.4-0.7-0.5-0.4-0.4-0.2-1.4-0.1-7.1 0.6-2.3-0.2-2.1-0.9-5.6 0.2-1.7-0.3-0.2-0.3-1.1-1.3-0.6-0.5-0.9-0.7-2.3-0.2-6.7 0.3-4.2 0.8-1.8 0-0.9 0.2-0.4 0.2 0 0.4 0.5 3.2-0.1 1-0.1 0.4-0.4 0.4-0.5 0.6-1.8 1.4-0.4 0.4-0.3 0.4-0.9 1.9-0.5 0.4-0.4 0.2-0.5 0.1-0.4-0.1-0.4-0.1-0.4-0.2-0.3-0.3-0.7-0.8-0.4-0.2-0.3-0.2-0.5-0.1-0.5 0-2.5 0.7-0.6 0-0.4-0.1-1.1-0.4-4.9 0.8-1.6-0.2-0.5-0.4-1.1-1-1-1.3-0.7-1.5-0.4-1.2-1.1-5.4-0.1-0.3-3.5-6.2-0.4-0.9 0-0.5 0.1-3.1-0.4-2-1.2-4-0.1-0.4 0.1-0.5 0.1-0.3 0.2-0.4 0.3-0.2 0.4-0.2 0.4-0.2 1-0.1 3 0.2 0.5-0.1 0.4-0.1 0.4-0.1 0.3-0.3 0.3-0.4 0.3-0.6 0.2-1.3-0.1-0.9-0.1-0.6-0.8-1.5-0.9-1.3-0.3-0.3-0.5-0.5-0.7-0.5-1.1-0.7-1.5-0.6 1.4-1.2z"></path>
-                                <!-- Cartago -->
-                                <path id="Cartago" class="province-path fill-slate-200" d="M641.7 217.9l19.8 9 6.9 3.3 9.5 4.5 15.5 7.2 4.1 1.5 22.8 0.2 16.7 0.4 3.2 0.7-0.4 0.6-2 2.8-1.2 2.7-0.5 2.8 0.2 3.5 1.8 5.7 0.4 2.9-1 2.8-6.7 8.4-4.8 5.8-1.3 2-3.5 9-9.1 11-2.2 4.5-0.6 4.9 0.4 1.6 0.3 1.9 0.9 2.2 0.3 0.4 0.5 0.6 0.4 0.4 1 2.2 0.6 1.7-16.7-10.1-0.4-0.2-1.5-0.7-1.4-1.2-4-4.2-1.9 0.6-0.6 0.7-0.8 1.4-0.2 0.3-0.3 0.3-0.3 0.2-0.4 0.2-0.4 0.1-0.4 0.1-0.5 0.1-0.5 0-1.9-0.2-0.4 0.1-0.8 0.3-2.2 1.1-0.3 0-0.3-0.3-0.3-2.1-0.5-1.7-0.2-0.4-0.4-0.4-0.7-0.4-2.4-0.8-0.8-0.5-0.4-0.4-1.8-2.4-3 0.3-0.8 0-3.4-0.7-0.5-0.1-0.4-0.4-0.6-0.6-0.8-1.3-0.6-1.3-0.3-0.7-0.1-0.4-1.1-2.3-1.2-2-0.3-0.3-0.4-0.3-0.7-0.2-1.2-0.1-0.7 0.1-0.4 0.2-0.4 0.2-0.4 0.1-0.8-0.2-3.2-1.6-1.9-0.7-0.5-0.1-0.8-0.7-3.5-4.6-1.4-2.4-0.1-0.3-0.1-0.4-0.8-0.7-3.1-1-1-2-0.3-0.8-0.3-0.8-0.4-1.5-1.3-0.2-5.8 1.3-0.9-0.2-1-0.1-0.4 0-1.3 0.4-1.9 0.7-0.5 0.1-0.4 0-0.4-0.2-0.2-0.3-0.2-0.4-0.1-0.5 0-0.5 0.1-0.7 0.5-1 1.1-1.7 2.8-2.6 1.9-1.3 1.2-1.3 4.5-7.4-3.1-1.4-0.6-0.3-0.3-0.2 0.3-1.3 4.2-6.9 7.2-2.6 0.2-0.1 4.1-0.1 1.5 0.3 0.3 0.2 0.5 0.1 0.6-0.1 0.5-0.2 2-2.2 1.9-0.2 0.9-0.3 0.6-0.5 0.5-0.7 0.3-1.3-0.7-3.5-0.3-4.2-0.4-1.4-0.6-0.9-3.2-3.6-0.3-0.2-0.7-0.4-1.4-0.9-1.3-1.3-0.6-0.7-0.4-0.6-2.2-7.7z"></path>
-                            </g>
-                        </svg>
+                    <div id="map-container" class="bg-slate-50 border border-slate-100 rounded-md p-4 flex items-center justify-center shadow-inner relative overflow-hidden">
+                        <p class="text-sm text-slate-400 animate-pulse">Loading Map...</p>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT PANEL: Charts & Visuals (Spans 7 columns on large screens) -->
+            <!-- RIGHT PANEL: Charts & Visuals -->
+            <!-- STREAMING_CHUNK: Styling the visualization panel -->
             <div class="lg:col-span-7">
                 <div id="breakdown-view" class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 flex flex-col sm:flex-row items-center justify-center gap-8 h-full">
                     
@@ -108,6 +103,7 @@
     </main>
 
     <!-- Script to dynamically load JSON data and handle dashboard interactivity -->
+    <!-- STREAMING_CHUNK: Initializing state and dashboard functions -->
     <script>
         // Define party color configurations
         const partyStyles = {
@@ -116,7 +112,8 @@
             "Frente Amplio": { css: "bg-yellow-400 text-yellow-900", hex: "#facc15" },
             "Unidad Social Cristiana": { css: "bg-blue-600 text-blue-50", hex: "#2563eb" },
             "Nueva República": { css: "bg-sky-500 text-sky-50", hex: "#0ea5e9" },
-            "Coalición Agenda Ciudadana": { css: "bg-red-500 text-red-50", hex: "#ef4444" }
+            "Coalición Agenda Ciudadana": { css: "bg-red-500 text-red-50", hex: "#ef4444" },
+            "Other": { css: "bg-slate-400 text-slate-50", hex: "#94a3b8" }
         };
 
         function getStyle(party) {
@@ -124,28 +121,53 @@
         }
 
         let pieChart = null;
+        let activeMetric = 'seats'; // can be 'seats' or 'popular_vote'
+        let currentSelection = 'National';
+        let electionData = null;
 
-        // Fetch your external Python-generated JSON data file
-        fetch('election_results.json')
-            .then(response => {
-                if (!response.ok) throw new Error("HTTP error reading JSON!");
-                return response.json();
-            })
-            .then(electionData => {
-                
-                // 1. Render Top National Summary Grid Cards
+        // Wrap everything in an async function to make loading external files cleaner
+        async function initializeDashboard() {
+            try {
+                // 1. Fetch the external SVG map and inject it into the page
+                const svgResponse = await fetch('costa_rica.svg');
+                if (!svgResponse.ok) throw new Error("Could not load SVG map file!");
+                const svgContent = await svgResponse.text();
+                document.getElementById('map-container').innerHTML = svgContent;
+
+                // 2. Fetch the external Python/JSON data file
+                const dataResponse = await fetch('election_results.json');
+                if (!dataResponse.ok) throw new Error("Could not load JSON data file!");
+                electionData = await dataResponse.json();
+
+                // 3. Render Top National Summary Grid Cards (Seats and Popular Vote side-by-side inside cards)
                 const nationalContainer = document.getElementById('national-container');
-                for (const [party, seats] of Object.entries(electionData.national_total)) {
-                    const style = getStyle(party);
-                    nationalContainer.innerHTML += `
-                        <div class="${style.css} p-4 rounded-md border border-slate-100 flex flex-col items-center justify-center text-center shadow-sm">
-                            <span class="text-3xl font-black mb-1">${seats}</span>
-                            <span class="text-xs font-semibold uppercase tracking-wide leading-tight">${party}</span>
-                        </div>
-                    `;
-                }
+                const natSeats = electionData.national_total.seats;
+                const natVotes = electionData.national_total.popular_vote;
 
-                // 2. Setup the Dropdown Select Options
+                // Sort national parties by seats won
+                const sortedNationalParties = Object.keys(natSeats).sort((a,b) => natSeats[b] - natSeats[a]);
+
+                sortedNationalParties.forEach(party => {
+                    if (natSeats[party] > 0 || natVotes[party] > 0) {
+                        // Change "seat" to "seats" only if party has multiple seats.
+                        if (natSeats[party] == 1) {
+                            numSuffix = "";
+                        } else {
+                            numSuffix = "s";
+                        }
+
+                        const style = getStyle(party);
+                        nationalContainer.innerHTML += `
+                            <div class="${style.css} p-3 rounded-md border border-slate-100 flex flex-col items-center justify-center text-center shadow-sm">
+                                <span class="text-2xl font-black mb-0.5">${natSeats[party] || 0} <span class="text-xs font-normal">seat${numSuffix}</span></span>
+                                <span class="text-xs font-bold leading-tight uppercase tracking-wide truncate max-w-full" title="${party}">${party}</span>
+                                <span class="text-[10px] opacity-90 mt-1">${natVotes[party] ? natVotes[party].toFixed(1) : '0.0'}% vote</span>
+                            </div>
+                        `;
+                    }
+                });
+
+                // 4. Setup the Dropdown Select Options
                 const areaSelect = document.getElementById('area-select');
                 const provinceNames = Object.keys(electionData.provinces);
                 
@@ -156,32 +178,39 @@
                     areaSelect.appendChild(option);
                 });
 
-                // 3. Centralized Function to Update Map Highlights, Titles, Data Rows, and Pie Chart
+                // 5. Centralized Function to Update Map Highlights, Titles, Data Rows, and Pie Chart
+                // STREAMING_CHUNK: Defining the rendering function for charts and details
                 function renderChartView(selection) {
+                    currentSelection = selection;
                     let dataToDisplay = {};
                     let titleText = "";
 
                     // A. Determine dataset based on choice
                     if (selection === "National") {
-                        dataToDisplay = electionData.national_total;
-                        titleText = "National Total (57 Seats)";
+                        dataToDisplay = electionData.national_total[activeMetric];
+                        titleText = activeMetric === 'seats' ? "National Allocation (57 Seats)" : "National Popular Vote %";
                     } else {
-                        dataToDisplay = electionData.provinces[selection].allocation;
-                        const seats = electionData.provinces[selection].total_seats_available;
-                        titleText = `${selection} (${seats} Seats)`;
+                        dataToDisplay = electionData.provinces[selection][activeMetric];
+                        const totalProvSeats = electionData.provinces[selection].total_seats_available;
+                        titleText = activeMetric === 'seats' 
+                            ? `${selection} Seat Allocation (${totalProvSeats} Seats)` 
+                            : `${selection} Popular Vote %`;
                     }
 
-                    // B. Sync Map Colors (Green for active, Light gray for rest)
+                    // B. Sync Map Colors (Golden/Amber for National, Green for Active, Light gray for rest)
                     document.querySelectorAll('.province-path').forEach(path => {
-                        // Remove hover class block if it was selected
                         path.classList.remove('active-province');
                         
-                        if (path.id === selection) {
+                        if (selection === "National") {
+                            // Turn the whole country golden
+                            path.style.fill = 'oklch(87.9% 0.169 91.605)'; // Tailwind amber-300
+                        } else if (path.id === selection) {
+                            // Turn only the selected province green
                             path.style.fill = '#22c55e'; // Tailwind green-500 highlight
                             path.classList.add('active-province'); // Prevent hover graying out active item
-                            // Bring active path to front so its white borders sit cleanly on top
                             path.parentNode.appendChild(path); 
                         } else {
+                            // Dim unselected provinces
                             path.style.fill = '#e2e8f0'; // Tailwind slate-200 normal unselected
                         }
                     });
@@ -197,30 +226,29 @@
                     
                     detailsContainer.innerHTML = ''; // Clear prior elements
 
-                    for (const [party, seats] of Object.entries(dataToDisplay)) {
-                        if (seats > 0) { 
-                            const style = getStyle(party);
-                            
-                            labels.push(party);
-                            chartData.push(seats);
-                            backgroundColors.push(style.hex);
-                            if (seats == 1) {
-                                detailsContainer.innerHTML += `
-                                    <div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
-                                        <span class="text-sm font-medium text-slate-700">${party}</span>
-                                        <span class="${style.css} text-xs font-bold px-2 py-1 rounded-full shadow-sm">1 seat</span>
-                                    </div>
-                                `;
-                            } else {
-                                detailsContainer.innerHTML += `
-                                    <div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
-                                        <span class="text-sm font-medium text-slate-700">${party}</span>
-                                        <span class="${style.css} text-xs font-bold px-2 py-1 rounded-full shadow-sm">${seats} seats</span>
-                                    </div>
-                                `;
-                            }
-                            
-                        }
+                    // Sort display items descending by metric value
+                    const sortedParties = Object.entries(dataToDisplay)
+                        .filter(([_, value]) => value > 0)
+                        .sort((a, b) => b[1] - a[1]);
+
+                    for (const [party, val] of sortedParties) {
+                        const style = getStyle(party);
+
+                        // Handles singular/plural grammar directly inline
+                        const displayVal = activeMetric === 'seats' 
+                            ? `${val} ${val === 1 ? 'seat' : 'seats'}` 
+                            : `${val.toFixed(1)}%`;
+
+                        labels.push(party);
+                        chartData.push(val);
+                        backgroundColors.push(style.hex);
+
+                        detailsContainer.innerHTML += `
+                            <div class="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
+                                <span class="text-sm font-medium text-slate-700 truncate max-w-[70%]" title="${party}">${party}</span>
+                                <span class="${style.css} text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">${displayVal}</span>
+                            </div>
+                        `;
                     }
 
                     // E. Handle Chart.js Instantiation or Update animations
@@ -232,32 +260,51 @@
                         pieChart.update();
                     } else {
                         pieChart = new Chart(ctx, {
-                            type: 'pie',
+                            type: 'doughnut',
                             data: {
                                 labels: labels,
                                 datasets: [{
                                     data: chartData,
                                     backgroundColor: backgroundColors,
-                                    borderWidth: 1,
+                                    borderWidth: 1.5,
                                     borderColor: '#ffffff'
                                 }]
                             },
                             options: {
                                 responsive: true,
                                 plugins: {
-                                    legend: { display: false } // Hidden because side panel lists them beautifully
+                                    legend: { display: false }
                                 }
                             }
                         });
                     }
                 }
 
-                // 4. Connect Dropdown Interactions
+                // 6. Tab Switching Logic
+                // STREAMING_CHUNK: Implementing switcher tabs event handlers
+                const tabSeats = document.getElementById('tab-seats');
+                const tabVote = document.getElementById('tab-vote');
+
+                tabSeats.addEventListener('click', () => {
+                    activeMetric = 'seats';
+                    tabSeats.className = "w-1/2 py-2 text-xs font-semibold rounded-l-md border border-slate-300 bg-blue-50 text-blue-700 focus:outline-none transition-colors";
+                    tabVote.className = "w-1/2 py-2 text-xs font-semibold rounded-r-md border-t border-b border-r border-slate-300 bg-white text-slate-600 hover:text-slate-800 hover:bg-slate-50 focus:outline-none transition-colors";
+                    renderChartView(currentSelection);
+                });
+
+                tabVote.addEventListener('click', () => {
+                    activeMetric = 'popular_vote';
+                    tabVote.className = "w-1/2 py-2 text-xs font-semibold rounded-r-md border border-blue-500 bg-blue-50 text-blue-700 focus:outline-none transition-colors";
+                    tabSeats.className = "w-1/2 py-2 text-xs font-semibold rounded-l-md border border-slate-300 bg-white text-slate-600 hover:text-slate-800 hover:bg-slate-50 focus:outline-none transition-colors";
+                    renderChartView(currentSelection);
+                });
+
+                // 7. Connect Dropdown Interactions
                 areaSelect.addEventListener('change', (e) => {
                     renderChartView(e.target.value);
                 });
 
-                // 5. Connect Interactive SVG Map Click Events
+                // 8. Connect Interactive SVG Map Click Events
                 document.querySelectorAll('.province-path').forEach(path => {
                     path.addEventListener('click', () => {
                         areaSelect.value = path.id; // Switch selection box value
@@ -265,17 +312,21 @@
                     });
                 });
 
-                // 6. Draw National Profile by Default on Initial Application Load
+                // 9. Draw National Profile by Default on Initial Application Load
                 renderChartView("National");
-            })
-            .catch(error => {
-                console.error("Error loading the dashboard payload setup:", error);
-                document.getElementById('national-container').innerHTML = `
-                    <div class="col-span-full text-red-600 font-medium p-4 text-center">
-                        Failed to load data. Ensure 'election_results.json' is present in the local server directory.
+
+            } catch (error) {
+                console.error("Dashboard initialization error:", error);
+                document.getElementById('map-container').innerHTML = `
+                    <div class="text-red-600 font-medium p-4 text-center text-sm">
+                        Failed to load data. Ensure 'election_results.json' and 'costa_rica.svg' are present in the directory.
                     </div>
                 `;
-            });
+            }
+        }
+
+        // Boot up the dashboard
+        initializeDashboard();
     </script>
 </body>
 </html>
